@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div layout:fragment="main-content">
+
+    <div class = "row">
+        <div class = "col-sm-3" style="background-color: #e9ecef;height: 800px;">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p th:text="#{label.admin}"></p>
+                    <p><a href="/admin" th:text="#{label.items}"></a></p>
+                    <p><a href="/admin_brand" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.brands}"></a></p>
+                    <p><a href="/admin_country" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.countries}"></a></p>
+                    <p><a href="/admin_category" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.categories}"></a></p>
+                    <p><a href="/admin_role" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.roles}"></a></p>
+                    <p><a href="/admin_user" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.users}"></a></p>
+                    <p><a href="/itemsBasket_page" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.history}"></a></p>
+                </div>
+            </div>
+        </div>
+        <div class = "col-sm-9" style="background-color: white">
+            <div class="card"style="width: 900px;border: none;margin-top: 50px;">
+                <h5 class="card-header" style="background-color: white" th:text="#{label.countries}">
+                    <button type="button" class="btn btn-primary btn-sm float-right ml-2" data-toggle="modal" data-target="#exampleModal"style="background-color: #122647 ">
+                        + ADD NEW
+                    </button>
+                </h5>
+                <div class="card-body">
+                    <table class = "table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th th:text="#{label.name}"></th>
+                            <th th:text="#{label.code}"></th>
+                            <th th:text="#{label.operations}"></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        <tr th:each="cnt:${countries}">
+                            <td th:text="${cnt.id}"></td>
+                            <td th:text="${cnt.name}"></td>
+                            <td th:text="${cnt.code}"></td>
+                            <td>
+                                <a href="#" class="btn btn-primary btn-sm" data-toggle="modal" th:data-target="${'#save_country' + cnt.getId()}" style="background-color: #28a745" th:text="#{button.edit}"></a>
+
+                                <div class="modal fade" th:id="${'save_country' + cnt.getId()}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel" th:text="#{button.edit}"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form th:action="@{'/save_country'}" method = "post">
+                                                    <input type="hidden" name="id" th:value="${cnt.id}">
+                                                    <div class="form-group">
+                                                        <label  class="col-form-label" th:text="#{label.name}"></label>
+                                                        <input type="text" class="form-control" name="name" th:value="${cnt.name}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label  class="col-form-label" th:text="#{label.code}"></label>
+                                                        <input type="text" class="form-control" name="code" th:value="${cnt.code}">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary"style="background-color: #122647;" th:text="#{button.save}"></button>
+                                                        <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="#" class="btn btn-secondary btn-sm" data-toggle="modal" th:data-target="${'#delete_country' + cnt.getId()}" style="background-color: #122647" th:text="#{button.delete}"></a></td>
+                                <div class="modal fade" th:id="${'delete_country' + cnt.getId()}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel1" th:text="#{button.delete_war}"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form th:action="@{'/delete_country'}" method = "post">
+                                                    <input type="hidden" name="id" th:value="${cnt.id}">
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary"style="background-color: #122647;" th:text="#{button.delete}"></button>
+                                                        <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="form-group">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal" th:text="#{button.add}"></button>
+                    </div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel4" th:text="#{button.add_country}"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form th:action="@{'/add_country'}" method = "post">
+                                        <div class="form-group">
+                                            <label  class="col-form-label" th:text="#{label.name}"></label>
+                                            <input type="text" class="form-control" name="name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-form-label" th:text="#{label.code}"></label>
+                                            <input type="text" class="form-control" name="code">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary"style="background-color: #122647;" th:text="#{button.add_country}"></button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2" th:text="#{button.delete_war}"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{'/delete_country'}" method = "post">
+                        <!--<input type="hidden" name="id" th:value="${country.id}">-->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"style="background-color: #122647;" th:text="#{button.delete}"></button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html">
+
+<div layout:fragment="main-content">
+
+    <div class="row mt-2">
+        <div class="col-3">
+            <table class="table table-bordered table-sm">
+                <thead>
+                <th style="background-color: #1d8442; color: white;" th:text="#{label.categories}"></th>
+                </thead>
+                <tbody>
+                <tr><td><a href="#" th:text="#{label.allItems}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{label.phones}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{label.televisions}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{label.gameconsoles}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{label.other}"></a></td></tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered table-sm">
+                <thead>
+                <th style="background-color: #1d8442; color: white;" th:text="#{label.brands}"></th>
+                </thead>
+                <tbody>
+                <tr><td><a href="#" th:text="#{brands.apple}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{brands.samsung}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{brands.lg}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{brands.bosch}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{brands.zepter}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{brands.xiaomi}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{brands.nokia}"></a></td></tr>
+                <tr><td><a href="#" th:text="#{label.other}"></a></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-9">
+
+            <form th:action="@{'/sorted'}" method="get">
+                <div class="row">
+                    <div class="col-2">
+                        <label th:text="#{label.device_name}">Name:</label>
+                        <input class="form-control " name="search_item" th:value="${search_name}" type="search" aria-label="Search" >
+                    </div>
+                    <div class="col-3">
+                        <label th:text="#{label.brands}"></label>
+                        <select class="form-control" name="brand_id">
+                            <option th:each="b:${brands}" th:text="${b.getName()}" th:value="${b.getId()}"></option>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label th:text="#{sort.price_from}"></label>
+                        <input class="form-control " name="price_from" type="search"  aria-label="Search">
+                    </div>
+                    <div class="col-2">
+                        <label th:text="#{sort.price_to}"></label>
+                        <input class="form-control " name="price_to" type="search" aria-label="Search">
+                    </div>
+                    <div class="col-3">
+                        <button class="btn btn-success"  type="submit" style="width: 180px;margin-top: 31px;background-color: #1d8442;" th:text="#{button.search}"></button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-7">
+                        <h4 th:text="#{search.result}"></h4>
+                    </div>
+                    <div class="col-2">
+                        <label style="font-size: 13px;margin-top: 8px" th:text="#{search.orderby}"></label>
+                    </div>
+                    <div class="col-3">
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons" style="height:33px;">
+
+                            <p class="btn btn-secondary active" style="font-size: 13px" th:text="#{button.asc}">
+                                <input type="radio" name="ascending" value="ascending" checked>
+                            </p>
+                            <p class="btn btn-secondary"style="font-size: 13px" th:text="#{button.des}">
+                                <input type="radio" name="ascending" value="descending" >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col-4" th:each="it:${items}">
+                    <div class="card-deck">
+                        <div class="card mt-3" >
+                            <img th:src="${it.getSmallPicURL()}" class="card-img-top" alt="..." style="height: 175px;">
+                            <div class="card-body">
+                                <a th:href="@{'details?id='+${it.getId()}}"><h6 class="card-title" th:text="${it.name}"></h6></a>
+                                <h6 class="card-title" th:text="${'$'} + ${it.price + 0.99}"></h6>
+                                <p class="card-text" th:text="${it.description}" style="min-height: 75px;"></p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-muted" th:text="${it.stars}"></small>
+                                <img style="height: 15px;width: 15px;margin-left: 3px" th:each="i:${#numbers.sequence(0,it.getStars()-1,1)}" src="stard.png" class="card-img-top" alt="...">
+                                <img style="height: 15px;width: 15px;margin-right: 3px" th:each="i:${#numbers.sequence(0,5 -(it.getStars())-1,1)}" src="star2.png" class="card-img-top" alt="...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+</html>

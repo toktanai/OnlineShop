@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div layout:fragment="main-content">
+
+    <div class = "row">
+        <div class = "col-sm-3" style="background-color: #e9ecef;height: 800px;">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p th:text="#{label.admin}"></p>
+                    <p><a href="/admin" th:text="#{label.items}"></a></p>
+                    <p><a href="/admin_brand" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.brands}"></a></p>
+                    <p><a href="/admin_country" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.countries}"></a></p>
+                    <p><a href="/admin_category" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.categories}"></a></p>
+                    <p><a href="/admin_role" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.roles}"></a></p>
+                    <p><a href="/admin_user" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.users}"></a></p>
+                    <p><a href="/itemsBasket_page" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.history}"></a></p>
+                </div>
+            </div>
+        </div>
+        <div class = "col-sm-9" style="background-color: white">
+
+            <div class="card"style="width: 900px;border: none;margin-top: 50px;">
+                <h5 class="card-header" style="background-color: white" th:text="#{label.categories}"></h5>
+                <div class="card-body">
+                    <table class = "table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th th:text="#{label.name}"></th>
+                            <th th:text="#{label.url}"></th>
+                            <th th:text="#{label.operations}"></th>
+                        </tr>
+                        </thead>
+                        <tr th:each="c:${categories}">
+                            <input type="hidden" th:id="${'name_'+c.id}" th:value="${c.name}">
+                            <input type="hidden" th:id="${'logoURL_'+c.id}" th:value="${c.logoURL}">
+                            <td th:text="${c.getId()}"></td>
+                            <td th:text="${c.getName()}"></td>
+                            <td th:text="${c.getLogoURL()}"></td>
+                            <td>
+                                <button class="btn btn-success" th:data-id="${c.id}" onclick="editCategory(this.getAttribute('data-id'))" data-toggle="modal" data-target="#edit">Edit</button>
+                                <a href="#" class="btn btn-secondary btn-sm" data-toggle="modal" th:data-target="${'#delete_category' + c.getId()}" style="background-color: #122647" th:text="#{button.delete}"></a>
+                                <div class="modal fade" th:id="${'delete_category' + c.getId()}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel1" th:text="#{button.delete_war}"></h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form th:action="@{'/delete_category'}" method = "post">
+                                                    <input type="hidden" name="id" th:value="${c.id}">
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary"style="background-color: #122647;" th:text="#{button.delete}"></button>
+                                                        <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+            <button type="button" th:text="#{button.add}" class="btn btn-success float-left mt-1" data-toggle="modal" data-target="#addCategory"></button>
+
+        </div>
+    </div>
+    <div class="modal fade" id="addCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" th:text="#{button.add}"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{'/addCategory'}" method = "post">
+                        <div class="form-group">
+                            <label  class="col-form-label" th:text="#{label.name}"></label>
+                            <input type="text" class="form-control" name="category_name" placeholder="Name of Category...">
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-form-label" th:text="#{label.url}"></label>
+                            <input type="text" class="form-control" name="url" placeholder="Code...">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"style="background-color: #122647 " th:text="#{button.add}"></button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="updateLeagueModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateLeagueModalLabel" th:text="#{button.edit}"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form th:action="@{'/edit_Category'}" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="id" name="id">
+                        <div class="form-group">
+                            <label for="name" th:text="#{label.name}"></label>
+                            <input type="text" class="form-control" id="name" name="name"  >
+                        </div>
+                        <div class="form-group">
+                            <label for="logoURL" th:text="#{label.url}"></label>
+                            <input type="text" class="form-control" id="logoURL" name="logoURL" >
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark" th:text="#{button.edit}"></button>
+                        <button type="button" class="btn btn-danger" data-dismiss = "modal" th:text="#{button.cancel}"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const editCategory = (id) =>{
+            document.getElementById("id").value = id;
+            document.getElementById("name").value = document.getElementById('name_'+id).value;
+            document.getElementById("logoURL").value = document.getElementById("logoURL_"+id).value;
+        }
+    </script>
+</div>
+</html>

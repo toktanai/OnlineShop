@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div layout:fragment="main-content">
+
+    <div class = "row">
+        <div class = "col-sm-3" style="background-color: #e9ecef;height: 800px">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p th:text="#{label.admin}"></p>
+                    <p><a href="/admin" th:text="#{label.items}"></a></p>
+                    <p><a href="/admin_brand" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.brands}"></a></p>
+                    <p><a href="/admin_country" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.countries}"></a></p>
+                    <p><a href="/admin_category" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.categories}"></a></p>
+                    <p><a href="/admin_role" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.roles}"></a></p>
+                    <p><a href="/admin_user" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.users}"></a></p>
+                    <p><a href="/itemsBasket_page" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.history}"></a></p>
+                </div>
+            </div>
+        </div>
+        <div class = "col-sm-9" style="background-color: white">
+            <div class="card"style="width: 900px;border: none;margin-top: 50px;">
+                <h5 class="card-header" style="background-color: white" th:text="#{label.users}">
+                    <button type="button" class="btn btn-primary btn-sm float-right ml-2" data-toggle="modal" data-target="#example"style="background-color: #122647 ">
+                        + ADD NEW
+                    </button>
+                    <div class="modal fade" id="example" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel" th:text="#{button.add}"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form th:action="@{'/add_user'}" method = "post">
+                                        <div class="form-group">
+                                            <label  class="col-form-label" th:text="#{label.full_name}"></label>
+                                            <input type="text" class="form-control" name="full_name" placeholder="Name..">
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-form-label" th:text="#{label.email}"></label>
+                                            <input type="email" class="form-control" name="email" placeholder="Email..">
+                                        </div>
+                                        <div class="form-group">
+                                            <label  class="col-form-label" th:text="#{label.password}"></label>
+                                            <input type="password" class="form-control" name="password" placeholder="Password...">
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary"style="background-color: #122647 " th:text="#{button.add}"></button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </h5>
+                <div class="card-body">
+                    <table class = "table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th th:text="#{label.email}"></th>
+                            <th th:text="#{label.full_name}"></th>
+                            <th th:text="#{label.roles}"></th>
+                            <th th:text="#{label.operations}"></th>
+                        </tr>
+                        </thead>
+                        <tr th:each="u:${users}">
+
+                            <td th:text="${u.id}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td th:text="${u.fullname}"></td>
+                            <td ><span th:each="r:${u.roles}" th:text="${r.name}" style="display: block"></span></td>
+                            <td>
+                                <a class="btn btn-success" style="background-color: #122647 "th:href="@{'details_user?id='+${u.id}}">DETAILS</a> </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</html>

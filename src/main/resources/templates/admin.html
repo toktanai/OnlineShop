@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div layout:fragment="main-content">
+
+    <div class = "row">
+        <div class = "col-sm-3" style="background-color: #e9ecef;height: 800px;">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p th:text="#{label.admin}"></p>
+                    <p><a href="/admin" th:text="#{label.items}"></a></p>
+                    <p><a href="/admin_brand" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.brands}"></a></p>
+                    <p><a href="/admin_country" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.countries}"></a></p>
+                    <p><a href="/admin_category" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.categories}"></a></p>
+                    <p><a href="/admin_role" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.roles}"></a></p>
+                    <p><a href="/admin_user" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.users}"></a></p>
+                    <p><a href="/itemsBasket_page" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.history}"></a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-9">
+            <div class="row mt-2 col-9">
+                <button class="btn btn-success" data-toggle="modal" data-target="#exampleModal" th:text="#{button.add}"></button>
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel" th:text="#{button.add}"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{'/add'}" method = "post">
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.device_name}"></label>
+                                    <input type="text" class="form-control" name="name">
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-form-label" th:text="#{label.description}"></label>
+                                    <textarea class="form-control" name ="description" ></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.price}"></label>
+                                    <input type="number" class="form-control" name="price">
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.stars}"></label>
+                                    <input type="number" class="form-control" name="stars" min="0" max="5">
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.s-url}"></label>
+                                    <input type="text" class="form-control" name="small_url" >
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.l-url}"></label>
+                                    <input type="text" class="form-control" name="large_url" >
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.date}"></label>
+                                    <input type="date" class="form-control" name="date">
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.inTopPage}"></label>
+                                    <select class="form-control" name="inTopPage">
+                                        <option>Yes</option>
+                                        <option>No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-form-label" th:text="#{label.brand}"></label>
+                                    <select class="form-control" name="brand_id">
+                                        <option th:each="brn:${brands}" th:text="${brn.name}" th:value="${brn.id}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary"style="background-color: #122647;" th:text="#{button.add_m}"></button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" th:text="#{button.cancel}"></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div class="row">
+            <div class="col-4" th:each="it:${items}">
+                <div class="card-deck">
+                    <div class="card mt-3" >
+                        <img th:src="${it.getSmallPicURL()}" class="card-img-top" alt="..." style="height: 175px;">
+                        <div class="card-body">
+                            <a th:href="@{'details_item?id='+${it.getId()}}"><h6 class="card-title" th:text="${it.name}"></h6></a>
+                            <h6 class="card-title" th:text="${'$'} + ${it.price + 0.99}"></h6>
+                            <p class="card-text" th:text="${it.description}" style="min-height: 75px;"></p>
+                            <p class="card-text"><a href="#" th:text="#{label.brand} + ': ' + ${it.brand!=null?it.brand.name:'-----'}"></a></p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted" th:text="${it.stars}"></small>
+                            <img style="height: 15px;width: 15px;margin-left: 3px" th:each="i:${#numbers.sequence(0,it.getStars()-1,1)}" src="stard.png" class="card-img-top" alt="...">
+                            <img style="height: 15px;width: 15px;margin-right: 3px" th:each="i:${#numbers.sequence(0,5 -(it.getStars())-1,1)}" src="star2.png" class="card-img-top" alt="...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+        </div>
+    </div>
+
+</div>
+</html>

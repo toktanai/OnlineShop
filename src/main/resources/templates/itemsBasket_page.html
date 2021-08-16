@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main.html"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div layout:fragment="main-content">
+
+    <div class = "row">
+        <div class = "col-sm-3" style="background-color: #e9ecef;height: 800px;">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <p th:text="#{label.admin}"></p>
+                    <p><a href="/admin" th:text="#{label.items}"></a></p>
+                    <p><a href="/admin_brand" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.brands}"></a></p>
+                    <p><a href="/admin_country" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.countries}"></a></p>
+                    <p><a href="/admin_category" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.categories}"></a></p>
+                    <p><a href="/admin_role" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.roles}"></a></p>
+                    <p><a href="/admin_user" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.users}"></a></p>
+                    <p><a href="/itemsBasket_page" sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{label.history}"></a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class = "col-sm-9" style="background-color: white">
+            <div class="card"style="width: 900px;border: none;margin-top: 50px;">
+                <h5 class="card-header" style="background-color: white" th:text="#{label.list-orders}"></h5>
+                <div class="card-body">
+                    <table class = "table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th th:text="#{label.full_name}"></th>
+                            <th th:text="#{label.items}"></th>
+                            <th th:text="#{label.orddate}"></th>
+
+                        </tr>
+                        </thead>
+                        <tr th:each="b:${baskets_users}">
+                            <td th:text="${b.id}"></td>
+                            <td th:text="${b.getUser_name()}"></td>
+                            <td><span th:text="${b.items_name}" style="display: block"></span></td>
+                            <td th:text="${b.getAddedDate()}"></td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        </div>
+    </div>
+
+</div>
+</html>
